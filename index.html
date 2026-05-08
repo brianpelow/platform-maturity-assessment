@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Maturity Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0f;
+  --surface: #13131a;
+  --surface2: #1a1a24;
+  --border: #2a2a3a;
+  --accent: #6c63ff;
+  --accent2: #a78bfa;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #e8e8f0;
+  --muted: #6b6b8a;
+  --sans: 'Syne', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Fraunces', serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+/* LANDING */
+#landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#landing::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 1.5rem;
+}
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+.hero-title span { color: var(--accent2); }
+.hero-sub {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 500px;
+  line-height: 1.7;
+  font-weight: 300;
+  font-style: italic;
+  margin: 0 auto 2.5rem;
+}
+.domain-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+.domain-pill {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 2px;
+}
+.start-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.9rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+.start-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.landing-meta {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+/* ASSESSMENT */
+#assessment { display: none; padding: 3rem 2rem 8rem; }
+.assessment-inner { max-width: 680px; margin: 0 auto; }
+.progress-bar-wrap {
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 1px;
+  transition: width 0.4s ease;
+}
+.domain-header {
+  margin-bottom: 2rem;
+}
+.domain-number {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 0.5rem;
+}
+.domain-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.domain-desc {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 300;
+}
+.question-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1px;
+  transition: border-color 0.2s;
+}
+.question-block:first-of-type { border-radius: 4px 4px 0 0; }
+.question-block:last-of-type { border-radius: 0 0 4px 4px; margin-bottom: 2rem; }
+.question-block:only-of-type { border-radius: 4px; margin-bottom: 2rem; }
+.question-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+}
+.slider-wrap { display: flex; align-items: center; gap: 1rem; }
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.slider::-webkit-slider-thumb:hover { background: var(--accent2); transform: scale(1.2); }
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.slider-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.slider-value {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent2);
+  min-width: 16px;
+  text-align: center;
+}
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.nav-btn {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+}
+.nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+.nav-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.nav-btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+
+/* RESULTS */
+#results { display: none; padding: 3rem 2rem; }
+.results-inner { max-width: 800px; margin: 0 auto; }
+.results-header { text-align: center; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.results-eyebrow { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+.results-title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+.overall-score {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--accent2);
+  line-height: 1;
+  margin: 1rem 0 0.5rem;
+}
+.overall-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.maturity-verdict {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4rem 1rem;
+  border-radius: 2px;
+  margin-top: 1rem;
+}
+.verdict-initial { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid var(--red); }
+.verdict-managed { background: rgba(245,158,11,0.1); color: var(--gold); border: 1px solid var(--gold); }
+.verdict-defined { background: rgba(108,99,255,0.1); color: var(--accent2); border: 1px solid var(--accent); }
+.verdict-measured { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid var(--green); }
+.verdict-optimizing { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid var(--green); }
+
+/* RADAR CHART */
+.radar-wrap { display: flex; justify-content: center; margin: 2rem 0 3rem; }
+canvas#radar { max-width: 400px; width: 100%; }
+
+/* DOMAIN SCORES */
+.domain-scores { margin-bottom: 3rem; }
+.domain-score-row {
+  display: grid;
+  grid-template-columns: 160px 1fr 40px 80px;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.domain-score-row:last-child { border-bottom: none; }
+.ds-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.ds-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.ds-bar-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+.ds-score { font-family: var(--mono); font-size: 0.8rem; font-weight: 500; text-align: right; }
+.ds-level { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: right; }
+
+/* RECOMMENDATIONS */
+.recs-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.5rem; color: var(--text); }
+.rec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1px;
+  transition: border-color 0.2s;
+}
+.rec-card:first-of-type { border-radius: 4px 4px 0 0; }
+.rec-card:last-of-type { border-radius: 0 0 4px 4px; margin-bottom: 2rem; }
+.rec-card.priority-high { border-left-color: var(--red); }
+.rec-card.priority-medium { border-left-color: var(--gold); }
+.rec-card.priority-low { border-left-color: var(--green); }
+.rec-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+.rec-domain { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.rec-priority { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 2px; }
+.priority-high .rec-priority { background: rgba(239,68,68,0.1); color: var(--red); }
+.priority-medium .rec-priority { background: rgba(245,158,11,0.1); color: var(--gold); }
+.priority-low .rec-priority { background: rgba(16,185,129,0.1); color: var(--green); }
+.rec-text { font-size: 0.9rem; line-height: 1.6; color: var(--text); margin-bottom: 0.75rem; }
+.rec-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--accent2);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.15s;
+}
+.rec-repo:hover { color: white; }
+.rec-repo::before { content: '->'; }
+
+/* CTAs */
+.cta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 3rem; }
+.cta-card { background: var(--surface); padding: 1.5rem; text-decoration: none; transition: background 0.2s; display: block; }
+.cta-card:hover { background: var(--surface2); }
+.cta-label { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent2); margin-bottom: 0.5rem; }
+.cta-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+.cta-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+.restart-link { display: block; text-align: center; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 2rem; cursor: pointer; transition: color 0.15s; }
+.restart-link:hover { color: var(--accent2); }
+
+@media(max-width:600px) {
+  .domain-score-row { grid-template-columns: 1fr 40px; }
+  .ds-bar-wrap { display: none; }
+  .nav-buttons { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="eyebrow">Brian Pelow · Platform Engineering</div>
+  <h1 class="hero-title">Platform <span>Maturity</span><br>Assessment</h1>
+  <p class="hero-sub">Six domains. Twenty questions. A scored report with specific recommendations and reference implementations.</p>
+  <div class="domain-pills">
+    <div class="domain-pill">Delivery</div>
+    <div class="domain-pill">Reliability</div>
+    <div class="domain-pill">Security</div>
+    <div class="domain-pill">Dev Experience</div>
+    <div class="domain-pill">Observability</div>
+    <div class="domain-pill">Governance</div>
+  </div>
+  <button class="start-btn" onclick="startAssessment()">Begin Assessment</button>
+  <div class="landing-meta">Takes 5-7 minutes · No login required · Results stay in your browser</div>
+</div>
+
+<!-- ASSESSMENT -->
+<div id="assessment">
+  <div class="assessment-inner">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div id="domain-content"></div>
+  </div>
+  <div class="nav-buttons" id="nav-buttons">
+    <button class="nav-btn" id="back-btn" onclick="goBack()" style="visibility:hidden">Back</button>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next Domain</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="results-inner">
+    <div class="results-header">
+      <div class="results-eyebrow">Assessment Complete</div>
+      <div class="results-title">Your Platform Maturity Report</div>
+      <div class="overall-score" id="overall-score">--</div>
+      <div class="overall-label">Overall Maturity Score / 5.0</div>
+      <div id="verdict-badge"></div>
+    </div>
+    <div class="radar-wrap"><canvas id="radar" width="400" height="400"></canvas></div>
+    <div class="domain-scores" id="domain-scores"></div>
+    <div class="recs-title">Priority Recommendations</div>
+    <div id="recommendations"></div>
+    <div class="cta-grid">
+      <a class="cta-card" href="https://github.com/brianpelow/platform-maturity-model" target="_blank">
+        <div class="cta-label">Reference Implementation</div>
+        <div class="cta-title">platform-maturity-model</div>
+        <div class="cta-desc">5-level framework with automated evidence collection across all 6 domains.</div>
+      </a>
+      <a class="cta-card" href="https://brianpelow.github.io/integrated-strategy" target="_blank">
+        <div class="cta-label">Strategy Document</div>
+        <div class="cta-title">The Integrated Strategy</div>
+        <div class="cta-desc">How platform engineering, organizational design, and AI governance fit together.</div>
+      </a>
+      <a class="cta-card" href="https://brianpelow.github.io/cto-interview-simulator" target="_blank">
+        <div class="cta-label">Interactive</div>
+        <div class="cta-title">CTO Interview Simulator</div>
+        <div class="cta-desc">Interview the engineer who built this framework. Adaptive 5-phase interview.</div>
+      </a>
+    </div>
+    <div class="restart-link" onclick="restart()">Retake Assessment</div>
+  </div>
+</div>
+
+<script>
+const DOMAINS = [
+  {
+    id: 'delivery',
+    name: 'Delivery',
+    desc: 'How reliably and rapidly does your team ship software?',
+    color: '#6c63ff',
+    questions: [
+      { text: 'Deployment frequency: how often does your team deploy to production?', min: 'Monthly or less', max: 'Multiple times daily' },
+      { text: 'Change lead time: how long from commit to production?', min: 'Weeks', max: 'Under 1 hour' },
+      { text: 'Your deployment pipeline is automated and enforces policy gates before production.', min: 'Manual / ad hoc', max: 'Fully automated with policy enforcement' },
+      { text: 'Change failure rate: what percentage of deployments cause incidents?', min: 'Over 30%', max: 'Under 5%' },
+    ]
+  },
+  {
+    id: 'reliability',
+    name: 'Reliability',
+    desc: 'How resilient are your systems and how quickly do you recover?',
+    color: '#10b981',
+    questions: [
+      { text: 'Your organization defines and tracks SLOs for all production services.', min: 'No SLOs defined', max: 'SLOs defined, tracked, and enforced' },
+      { text: 'Mean time to recovery (MTTR) when production incidents occur.', min: 'Days', max: 'Under 30 minutes' },
+      { text: 'Incident response is documented, practiced, and tool-supported.', min: 'Ad hoc firefighting', max: 'Automated runbooks and trained on-call rotation' },
+      { text: 'Error budgets govern when you can ship vs when you must stabilize.', min: 'No error budgets', max: 'Error budgets actively govern deployment decisions' },
+    ]
+  },
+  {
+    id: 'security',
+    name: 'Security',
+    desc: 'How embedded is security in your engineering workflow?',
+    color: '#ef4444',
+    questions: [
+      { text: 'Security scanning (SAST, DAST, dependency) is automated in your CI pipeline.', min: 'Manual reviews only', max: 'Fully automated with deployment gates' },
+      { text: 'Compliance controls are encoded as policy-as-code and automatically evaluated.', min: 'Narrative controls in documents', max: 'Machine-readable controls evaluated at every deploy' },
+      { text: 'Your change management process generates an audit trail automatically.', min: 'Manual CAB packages', max: 'Automated evidence generation with risk scoring' },
+      { text: 'Access controls and secrets management follow least-privilege principles.', min: 'Shared credentials / ad hoc', max: 'Zero-trust, automated rotation, full audit trail' },
+    ]
+  },
+  {
+    id: 'devex',
+    name: 'Dev Experience',
+    desc: 'How productive and autonomous are your engineers?',
+    color: '#f59e0b',
+    questions: [
+      { text: 'Engineers can scaffold a new service with all required standards in under 30 minutes.', min: 'Days of manual setup', max: 'Under 30 minutes with automated scaffolding' },
+      { text: 'An internal developer portal or service catalog gives engineers self-service access to platform capabilities.', min: 'No portal exists', max: 'Fully populated catalog with self-service workflows' },
+      { text: 'Pull requests are automatically enriched with descriptions, reviewer suggestions, and labels.', min: 'Entirely manual', max: 'AI-assisted PR automation' },
+      { text: 'Engineers spend the majority of their time on domain problems, not platform toil.', min: 'Over 30% time on toil', max: 'Under 10% time on toil' },
+    ]
+  },
+  {
+    id: 'observability',
+    name: 'Observability',
+    desc: 'How well can you understand and debug your systems?',
+    color: '#a78bfa',
+    questions: [
+      { text: 'You have correlated metrics, logs, and traces across all production services.', min: 'Siloed metrics only', max: 'Full correlation across all three pillars' },
+      { text: 'Your team can identify the root cause of a production incident in under 30 minutes.', min: 'Root cause often unknown', max: 'Root cause identified in under 30 minutes consistently' },
+      { text: 'Tech debt is measured, tracked, and has a prioritized remediation roadmap.', min: 'Not measured', max: 'Measured, tracked, and actively managed' },
+    ]
+  },
+  {
+    id: 'governance',
+    name: 'Governance',
+    desc: 'How mature is your AI and platform governance posture?',
+    color: '#6c63ff',
+    questions: [
+      { text: 'AI systems in production maintain a complete decision record (input, model, parameters, output) for replay.', min: 'No decision records', max: 'Full replay capability with hash integrity' },
+      { text: 'Your engineering organization has a model registry tracking every model version in production.', min: 'No model registry', max: 'Full registry with deployment authorization workflow' },
+      { text: 'Platform maturity is self-assessed automatically with evidence collected from your systems.', min: 'Not measured', max: 'Automated assessment with audit-ready evidence' },
+      { text: 'Attribution is a first-class requirement: every agent and automated action has a named human owner.', min: 'No attribution model', max: 'Complete attribution with audit trail for all automated actions' },
+    ]
+  }
+];
+
+const LEVEL_NAMES = ['', 'Initial', 'Managed', 'Defined', 'Measured', 'Optimizing'];
+const LEVEL_COLORS = ['', '#ef4444', '#f59e0b', '#6c63ff', '#10b981', '#10b981'];
+
+const RECOMMENDATIONS = {
+  delivery: [
+    { threshold: 2, priority: 'high', text: 'Your deployment pipeline lacks policy enforcement. Implement automated CAB risk scoring and deployment gates that block production deploys until compliance requirements are met.', repo: 'cab-automation', url: 'https://github.com/brianpelow/cab-automation' },
+    { threshold: 3, priority: 'medium', text: 'Standardize your deployment pipeline with policy-as-code. Every deploy should automatically generate a change record and evaluate against encoded compliance controls.', repo: 'orbit-platform', url: 'https://github.com/brianpelow/orbit-platform' },
+    { threshold: 4, priority: 'low', text: 'Consider encoding deployment frequency targets as SLOs and tracking them alongside reliability metrics for a complete delivery picture.', repo: 'PlatformSLOBoard', url: 'https://github.com/brianpelow/PlatformSLOBoard' },
+  ],
+  reliability: [
+    { threshold: 2, priority: 'high', text: 'Without defined SLOs and error budgets, your reliability posture is invisible. Define SLOs for all production services and implement error budget burn rate alerting immediately.', repo: 'PlatformSLOBoard', url: 'https://github.com/brianpelow/PlatformSLOBoard' },
+    { threshold: 3, priority: 'medium', text: 'Your incident response is ad hoc. Implement automated runbook generation and a structured incident lifecycle with AI-assisted triage and post-mortem drafting.', repo: 'IncidentPilot', url: 'https://github.com/brianpelow/IncidentPilot' },
+    { threshold: 4, priority: 'low', text: 'Consider connecting your SLO data to your DORA metrics for a complete reliability and delivery picture across teams.', repo: 'TeamHealthRadar', url: 'https://github.com/brianpelow/TeamHealthRadar' },
+  ],
+  security: [
+    { threshold: 2, priority: 'high', text: 'Narrative compliance controls cannot be evaluated at deploy time. The highest-value investment is encoding your top 5 compliance controls as OPA Rego policies that block non-compliant deployments.', repo: 'orbit-platform', url: 'https://github.com/brianpelow/orbit-platform' },
+    { threshold: 3, priority: 'medium', text: 'Your compliance evidence is assembled manually. Automate CAB package generation with AI-generated executive summaries and risk scoring before every production deployment.', repo: 'cab-automation', url: 'https://github.com/brianpelow/cab-automation' },
+    { threshold: 4, priority: 'low', text: 'Map your existing controls to SOC2, ISO 27001, and PCI-DSS frameworks to identify gaps and generate compliance narratives automatically.', repo: 'mcp-compliance-grc', url: 'https://github.com/brianpelow/mcp-compliance-grc' },
+  ],
+  devex: [
+    { threshold: 2, priority: 'high', text: 'Engineers spending significant time on platform toil is a talent retention and productivity crisis. Implement AI-assisted repo scaffolding with templates tuned for your industry standards.', repo: 'repoforge', url: 'https://github.com/brianpelow/repoforge' },
+    { threshold: 3, priority: 'medium', text: 'Without a service catalog, platform capabilities are invisible to engineers. Implement a Backstage-compatible catalog with automated hydration from your existing repos.', repo: 'service-catalog-sync', url: 'https://github.com/brianpelow/service-catalog-sync' },
+    { threshold: 4, priority: 'low', text: 'Automate PR descriptions, reviewer suggestions, and labels from git diff to reduce review cycle time and improve documentation quality.', repo: 'pr-autopilot', url: 'https://github.com/brianpelow/pr-autopilot' },
+  ],
+  observability: [
+    { threshold: 2, priority: 'high', text: 'Without correlated observability, your incident response is blind. Implement unified metrics, logs, and traces with error budget burn rate alerting as a foundation.', repo: 'PlatformSLOBoard', url: 'https://github.com/brianpelow/PlatformSLOBoard' },
+    { threshold: 3, priority: 'medium', text: 'Tech debt that is not measured is not managed. Implement automated tech debt scanning with complexity hotspot detection and a prioritized payoff roadmap.', repo: 'TechDebtLedger', url: 'https://github.com/brianpelow/TechDebtLedger' },
+    { threshold: 4, priority: 'low', text: 'Combine DORA metrics with SPACE framework scoring for a complete picture of team health and productivity across your engineering organization.', repo: 'TeamHealthRadar', url: 'https://github.com/brianpelow/TeamHealthRadar' },
+  ],
+  governance: [
+    { threshold: 2, priority: 'high', text: 'AI systems without decision records are an existential liability in regulated industries. Implement a decision record layer with hash integrity for every AI system making consequential decisions.', repo: 'ai-governance-framework', url: 'https://github.com/brianpelow/ai-governance-framework' },
+    { threshold: 3, priority: 'medium', text: 'A model registry is the highest-value, lowest-cost governance control available. Implement one now before the next model update. Two to four weeks of engineering effort closes the most universal replay gap.', repo: 'ai-governance-framework', url: 'https://github.com/brianpelow/ai-governance-framework' },
+    { threshold: 4, priority: 'low', text: 'Automate your platform governance scorecard with evidence collection across all maturity domains to generate audit-ready compliance artifacts continuously.', repo: 'platform-conductor', url: 'https://github.com/brianpelow/platform-conductor' },
+  ],
+};
+
+let currentDomain = 0;
+let scores = {};
+
+DOMAINS.forEach(d => {
+  scores[d.id] = new Array(d.questions.length).fill(3);
+});
+
+function startAssessment() {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('assessment').style.display = 'block';
+  renderDomain();
+}
+
+function renderDomain() {
+  const d = DOMAINS[currentDomain];
+  const progress = (currentDomain / DOMAINS.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('back-btn').style.visibility = currentDomain > 0 ? 'visible' : 'hidden';
+  document.getElementById('next-btn').textContent = currentDomain === DOMAINS.length - 1 ? 'See Results' : 'Next Domain';
+
+  let html = `
+    <div class="domain-header">
+      <div class="domain-number">Domain ${currentDomain + 1} of ${DOMAINS.length}</div>
+      <div class="domain-title" style="color:${d.color}">${d.name}</div>
+      <div class="domain-desc">${d.desc}</div>
+    </div>
+  `;
+
+  d.questions.forEach((q, i) => {
+    const val = scores[d.id][i];
+    html += `
+      <div class="question-block">
+        <div class="question-text">${q.text}</div>
+        <div class="slider-wrap">
+          <input type="range" class="slider" min="1" max="5" value="${val}"
+            oninput="updateScore('${d.id}', ${i}, this.value)"
+            style="accent-color:${d.color}">
+          <div class="slider-value" id="sv-${d.id}-${i}">${val}</div>
+        </div>
+        <div class="slider-labels">
+          <span class="slider-label">${q.min}</span>
+          <span class="slider-label">${q.max}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('domain-content').innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateScore(domainId, qIndex, value) {
+  scores[domainId][qIndex] = parseInt(value);
+  document.getElementById(`sv-${domainId}-${qIndex}`).textContent = value;
+}
+
+function goBack() {
+  if (currentDomain > 0) { currentDomain--; renderDomain(); }
+}
+
+function goNext() {
+  if (currentDomain < DOMAINS.length - 1) {
+    currentDomain++;
+    renderDomain();
+  } else {
+    showResults();
+  }
+}
+
+function getDomainScore(domainId) {
+  const s = scores[domainId];
+  return s.reduce((a, b) => a + b, 0) / s.length;
+}
+
+function showResults() {
+  document.getElementById('assessment').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const domainScores = DOMAINS.map(d => ({ ...d, score: getDomainScore(d.id) }));
+  const overall = domainScores.reduce((a, b) => a + b.score, 0) / domainScores.length;
+
+  document.getElementById('overall-score').textContent = overall.toFixed(1);
+
+  const level = Math.round(overall);
+  const verdictClasses = ['', 'verdict-initial', 'verdict-managed', 'verdict-defined', 'verdict-measured', 'verdict-optimizing'];
+  document.getElementById('verdict-badge').innerHTML = `<div class="maturity-verdict ${verdictClasses[level]}">${LEVEL_NAMES[level]}</div>`;
+
+  renderRadar(domainScores);
+  renderDomainScores(domainScores);
+  renderRecommendations(domainScores);
+
+  setTimeout(() => {
+    document.querySelectorAll('.ds-bar-fill').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 200);
+}
+
+function renderRadar(domainScores) {
+  const canvas = document.getElementById('radar');
+  const ctx = canvas.getContext('2d');
+  const cx = 200, cy = 200, r = 150;
+  const n = domainScores.length;
+
+  ctx.clearRect(0, 0, 400, 400);
+
+  // Grid
+  for (let level = 1; level <= 5; level++) {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+      const x = cx + (r * level / 5) * Math.cos(angle);
+      const y = cy + (r * level / 5) * Math.sin(angle);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(42,42,58,0.8)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Axes
+  for (let i = 0; i < n; i++) {
+    const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+    ctx.strokeStyle = 'rgba(42,42,58,0.6)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Data
+  ctx.beginPath();
+  domainScores.forEach((d, i) => {
+    const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+    const x = cx + (r * d.score / 5) * Math.cos(angle);
+    const y = cy + (r * d.score / 5) * Math.sin(angle);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(108,99,255,0.2)';
+  ctx.fill();
+  ctx.strokeStyle = '#6c63ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Points
+  domainScores.forEach((d, i) => {
+    const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+    const x = cx + (r * d.score / 5) * Math.cos(angle);
+    const y = cy + (r * d.score / 5) * Math.sin(angle);
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = d.color;
+    ctx.fill();
+  });
+
+  // Labels
+  ctx.font = '600 12px Syne, sans-serif';
+  ctx.textAlign = 'center';
+  domainScores.forEach((d, i) => {
+    const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+    const lx = cx + (r + 28) * Math.cos(angle);
+    const ly = cy + (r + 28) * Math.sin(angle);
+    ctx.fillStyle = d.color;
+    ctx.fillText(d.name, lx, ly + 4);
+  });
+}
+
+function renderDomainScores(domainScores) {
+  const html = domainScores.map(d => {
+    const pct = (d.score / 5) * 100;
+    const level = Math.round(d.score);
+    return `<div class="domain-score-row">
+      <div class="ds-name">${d.name}</div>
+      <div class="ds-bar-wrap"><div class="ds-bar-fill" data-target="${pct}" style="width:0%;background:${d.color}"></div></div>
+      <div class="ds-score" style="color:${d.color}">${d.score.toFixed(1)}</div>
+      <div class="ds-level">${LEVEL_NAMES[level]}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('domain-scores').innerHTML = html;
+}
+
+function renderRecommendations(domainScores) {
+  const recs = [];
+  domainScores.forEach(d => {
+    const domainRecs = RECOMMENDATIONS[d.id] || [];
+    domainRecs.forEach(r => {
+      if (d.score <= r.threshold) {
+        recs.push({ ...r, domain: d.name, score: d.score });
+      }
+    });
+  });
+
+  recs.sort((a, b) => {
+    const p = { high: 0, medium: 1, low: 2 };
+    return p[a.priority] - p[b.priority] || a.score - b.score;
+  });
+
+  const top = recs.slice(0, 6);
+  if (top.length === 0) {
+    document.getElementById('recommendations').innerHTML = '<p style="color:var(--muted);font-size:0.9rem;padding:1rem 0">Your platform maturity is exceptional. Continue monitoring and optimizing across all domains.</p>';
+    return;
+  }
+
+  const html = top.map((r, i) => `
+    <div class="rec-card priority-${r.priority} ${i === 0 ? '' : ''}">
+      <div class="rec-header">
+        <span class="rec-domain">${r.domain}</span>
+        <span class="rec-priority">${r.priority} priority</span>
+      </div>
+      <div class="rec-text">${r.text}</div>
+      <a class="rec-repo" href="${r.url}" target="_blank">${r.repo}</a>
+    </div>
+  `).join('');
+
+  document.getElementById('recommendations').innerHTML = html;
+}
+
+function restart() {
+  currentDomain = 0;
+  DOMAINS.forEach(d => { scores[d.id] = new Array(d.questions.length).fill(3); });
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('landing').style.display = 'flex';
+}
+</script>
+</body>
+</html>
